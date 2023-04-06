@@ -1,0 +1,102 @@
+.input{
+    display: flex;
+    height: 7em;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+} 
+
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgba(40, 159, 238, 0.705);
+    border-radius: 20px;
+}
+
+
+.input > select {
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.5s;
+}
+.input > button {
+    padding: 10px 10px;
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: #4133ff;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    height: 5em;
+    transition: 0.5s;
+}
+
+.input > button:hover {
+    background-color: #7c73fc;
+}
+
+.div-mother {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(117, 117, 117, 0.753);
+}
+
+.div-filho {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 60px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 5px solid #7c73fc;
+    
+}
+
+
+
+
+
+.text-div-mother {
+    width: 100%;
+}
+
+
+
+
+
+.data_variables{
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    width: 1200px;
+    overflow: auto;
+    overflow-y: hidden;
+}
+
+
+
+
+
+td{
+    max-width: 25ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+.variable_tables{
+    width: 100%;
+}
