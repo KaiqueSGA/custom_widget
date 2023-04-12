@@ -100,3 +100,19 @@ td{
 .variable_tables{
     width: 100%;
 }
+
+.button-generate{
+    height:2.2em;
+    width:6em;
+    margin-right: 1.3em;
+    border-radius: 0.5em;
+    background-color: rgb(28, 51, 90);
+    color:white;
+    border:  rgb(28, 51, 90);
+    margin-left: 10px;
+}
+
+
+.data_variables{
+    overflow-y: auto;
+}

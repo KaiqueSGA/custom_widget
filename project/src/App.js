@@ -17,11 +17,9 @@ function App() {
 
     async function listdevices(){
 
-         let list_response =  await account.analysis.list(); console.log(list_response)
+         let list_response =  await account.analysis.list();
          await account.analysis.run("642474606f1fa600090faf53")
-         //await my_device.getVariablesData("6419c2dea997d700090c60ae",{qty: 20}).catch((err) => console.log(err) )
          const esn_variables = (await my_device.getData({ qty: 200 })).filter(obj => obj.variable === "esn")//a cada 100 variáveis eu tenho uma média de 16 variáveis ESN
-         console.log(esn_variables)
        
        }
 
