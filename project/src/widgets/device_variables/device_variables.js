@@ -67,7 +67,6 @@ function Device_variables(){
 
                         <table border="1" className='variable_tables'>
                             <tr>
-                                <td>Address</td>
                                 <td>Origin</td>
                                 <td>Coordinates</td>
                                   
@@ -82,16 +81,34 @@ function Device_variables(){
                                       
                                         if(this.value === "MAC"){ 
                                           let element_to_insert_the_new_value = document.getElementsByClassName(element_id)[0];
+                                          let element_to_insert_the_address = document.getElementsByClassName(element_id)[1]; 
+
                                           let mac_coordinates = await location_funcs.get_coordinates_through_mac_datas(["mac0", "mac1", "mac2"],scope); 
+                                          let address = await location_funcs.get_address_through_coordinates(mac_coordinates.lat, mac_coordinates.lng);
+                                         
                                           element_to_insert_the_new_value.innerText = `${mac_coordinates.lat},${mac_coordinates.lng}`;
+                                          element_to_insert_the_address.innerText = address;
                                         }
-                                        else if(this.value === "LBS"){console.log("oieeeee")
+                                        else if(this.value === "LBS"){
                                           let element_to_insert_the_new_value = document.getElementsByClassName(element_id)[0];
+                                          let element_to_insert_the_address = document.getElementsByClassName(element_id)[1];//Position 1 because i yhave 2 elements with the same tags, the second element will render the address
+
                                           let lbs_coordinates = await location_funcs.get_coordinates_through_lbs_datas(["lbs0", "lbs1", "lbs2"],scope, scope.metadata.lbs_mode === "LTE" ?"lte" :"gsm" ); 
+                                          let address = await location_funcs.get_address_through_coordinates(lbs_coordinates.lat, lbs_coordinates.lng);
+                                         
                                           element_to_insert_the_new_value.innerText = `${lbs_coordinates.lat},${lbs_coordinates.lng}`; 
+                                          element_to_insert_the_address.innerText = address;
                                         }
                                         else{ 
+                                          let element_to_insert_the_coordinates = document.getElementsByClassName(element_id)[0];
+                                          let element_to_insert_the_address = document.getElementsByClassName(element_id)[1]; 
 
+                                          let gps_coordinates = { lat:scope.metadata.lat, lng:scope.metadata.lon };
+                                          let address = await location_funcs.get_address_through_coordinates(gps_coordinates.lat, gps_coordinates.lng);
+                                          
+                                          element_to_insert_the_coordinates.innerText = `${gps_coordinates.lat},${gps_coordinates.lng}`;
+                                          element_to_insert_the_address.innerText = address;
+                                        
                                         }
 
                                     })
@@ -100,7 +117,6 @@ function Device_variables(){
                             
                               return( 
                                 <tr>
-                                    <td className='data_variable'>{data.metadata.address}</td>
                                     <td className='data_variable'>{data.metadata.origin}</td>
 
                                     <td className='b'>
@@ -113,6 +129,8 @@ function Device_variables(){
 
                                      
                                      </td>
+
+                                     <td className={data.id}></td>
                                      <td className={data.id}></td>
 
                                 </tr>
