@@ -12,7 +12,8 @@ function Device_variables(){
   const device_methods = new tago_device();
   const location_funcs = new location_apis();
 
-    window.TagoIO.onStart((widget) => {
+
+    window.TagoIO.onStart((widget) => {console.log("oi")
         window.widget = widget;
     })
     window.TagoIO.ready();
@@ -29,6 +30,9 @@ function Device_variables(){
 
     
     
+
+   console.log(window.location.protocol + "//" + window.location.host + "/" + window.location.pathname);
+   console.log(window.TagoIO)
 
     return(
         <>
