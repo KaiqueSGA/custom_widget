@@ -6,33 +6,36 @@ const { location_apis } = require('../../classes/location/location.js')
 
 
 function Device_variables(){
-  const [account_devices, set_account_devices] = useState([]);
+  /* const [account_devices, set_account_devices] = useState([]); */
   const [device_variables, set_device_variables] = useState([]);
 
   const device_methods = new tago_device();
   const location_funcs = new location_apis();
 
+  var device_id;
 
-    window.TagoIO.onStart((widget) => {console.log("oi")
+
+     window.TagoIO.onStart((widget) => {
         window.widget = widget;
+        device_id = widget.display.variables[0].origin.id;
     })
-    window.TagoIO.ready();
+    window.TagoIO.ready(); 
 
 
 
 
 
     useEffect( () => {
-        device_methods.list()
+       /*  device_methods.list()
            .then((resp) => set_account_devices(resp))
-           .catch((err) => console.log(err))
+           .catch((err) => console.log(err)) */
     },[])
 
     
     
 
    console.log(window.location.protocol + "//" + window.location.host + "/" + window.location.pathname);
-   console.log(window.TagoIO)
+
 
     return(
         <>
@@ -46,7 +49,7 @@ function Device_variables(){
          <h3>Choose the device that you wish see the variables:</h3>
          </div>
          <div className="input">
-                    <select id="devices" className ="devices">
+                   {/*  <select id="devices" className ="devices">
                         {account_devices.map((item) =>{
                           try{
                              return(
@@ -57,9 +60,9 @@ function Device_variables(){
                             }
                                       
                         })}
-                    </select>
+                    </select> */}
 
-                    <button onClick={async() =>  { let request = await device_methods.get_device_variables(); set_device_variables(request.filter(obj => obj.variable === "esn")); }}> Show variables</button>
+                    <button onClick={async() =>  { let request = await device_methods.get_device_variables(device_id); set_device_variables(request.filter(obj => obj.variable === "esn")); }}> Show variables</button>
                 </div> 
 
 

@@ -3,7 +3,7 @@ const account = new Account({token:"191363cf-b92e-4700-8d9f-ca21d9e9783b"});
 
 export class tago_device{
 
-    async list(){//public method
+   /*  async list(){//public method
 
       return new Promise((resolve, reject) => {
         account.devices.list()
@@ -16,7 +16,7 @@ export class tago_device{
 
 
    async get_device_id(select_value){//private method
-       const device_id = select_value.split(",")[0];console.log(device_id)
+       const device_id = select_value.split(",")[0];
        return device_id;
    }
 
@@ -27,7 +27,7 @@ export class tago_device{
        let select_value = select.options[select.selectedIndex].value;
        
        return select_value;
-   }
+   } */
 
 
 
@@ -38,9 +38,9 @@ export class tago_device{
 
 
 
-   async get_device_variables(){//public method
-       let select_value = await this.get_select_content();
-       let device_id = await this.get_device_id(select_value);
+   async get_device_variables(device_id){//public method
+       /* let select_value = await this.get_select_content();
+       let device_id = await this.get_device_id(select_value); */
        let device_token = await this.get_device_token(device_id);
 
        const my_device = new Device({token: device_token });
