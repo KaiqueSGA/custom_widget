@@ -1,35 +1,31 @@
 import './device_variables.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const { tago_device } = require('../../classes/device/device.js');
 const { location_apis } = require('../../classes/location/location.js')
 
 
 function Device_variables(){
-  /* const [account_devices, set_account_devices] = useState([]); */
   const [device_variables, set_device_variables] = useState([]);
 
   const device_methods = new tago_device();
   const location_funcs = new location_apis();
 
-  var device_id;
 
 
-     window.TagoIO.onStart((widget) => {
+
+     window.TagoIO.onStart( async(widget) => {
         window.widget = widget;
-        device_id = widget.display.variables[0].origin.id;
+
+        let device_id = widget.display.variables[0].origin.id;
+        let request = await device_methods.get_device_variables(device_id); 
+        set_device_variables(request.filter(obj => obj.variable === "esn"));
     })
     window.TagoIO.ready(); 
 
 
-
-
-
-    useEffect( () => {
-       /*  device_methods.list()
-           .then((resp) => set_account_devices(resp))
-           .catch((err) => console.log(err)) */
-    },[])
+   console.log("UÉ");
+   console.log("PQ N ATUALIZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
     
     
@@ -43,34 +39,12 @@ function Device_variables(){
         <div className='div-mother'>
         <div className='div-filho'>
 
-        <div className='text-div-mother'>
-         <h1>HELLO MY FRIEND!</h1>
+      <div className='text-div-mother'>
+         <h1>See all variables that the selected device sent!</h1>
          <br/>
-         <h3>Choose the device that you wish see the variables:</h3>
-         </div>
-         <div className="input">
-                   {/*  <select id="devices" className ="devices">
-                        {account_devices.map((item) =>{
-                          try{
-                             return(
-                                 <option value={`${item.id},${item.name}`}> {item.name} </option>
-                             )
-                            }catch(err){
-                              console.log(err)
-                            }
-                                      
-                        })}
-                    </select> */}
-
-                    <button onClick={async() =>  { let request = await device_methods.get_device_variables(device_id); set_device_variables(request.filter(obj => obj.variable === "esn")); }}> Show variables</button>
-                </div> 
-
-
-
+        </div>
+       
                 <div className='data_variables'>
-
-                    
-                            
 
                         <table border="1" className='variable_tables'>
                             <tr>
