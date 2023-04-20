@@ -1,5 +1,6 @@
 import './device_variables.css';
 import React, { useEffect, useState } from 'react';
+import ConsoleService from '@tago-io/sdk/out/modules/Services/Console';
 
 const { tago_device } = require('../../classes/device/device.js');
 const { location_apis } = require('../../classes/location/location.js')
@@ -12,28 +13,22 @@ function Device_variables(){
   const location_funcs = new location_apis();
 
 
+  useEffect(() => {console.log("oiii")
+    window.TagoIO.onStart( async(widget) => {
+      window.widget = widget;
+
+      let device_id = widget.display.variables[0].origin.id;
+      let request = await device_methods.get_device_variables(device_id); 
+      set_device_variables(request); 
+  })
+  window.TagoIO.ready(); 
+  },[])
 
 
-     window.TagoIO.onStart( async(widget) => {
-        window.widget = widget;
-
-        let device_id = widget.display.variables[0].origin.id;
-        let request = await device_methods.get_device_variables(device_id); 
-        set_device_variables(request); 
-    })
-    window.TagoIO.ready(); 
-  
-
-  const oi = async() => {
-        let request = await device_methods.get_device_variables("6419c2dea997d700090c60ae"); 
-        set_device_variables(request); 
-  }
-
-    useEffect(() => {
-    oi()
-    },[])
+    
     
    
+
 
    function add_0_to_left(value){
 
@@ -79,8 +74,9 @@ function Device_variables(){
                                           let element_to_insert_the_new_value = document.getElementsByClassName(element_id)[0];
                                           let element_to_insert_the_address = document.getElementsByClassName(element_id)[1]; 
 
+                                          console.log(element_to_insert_the_new_value, element_to_insert_the_address)
                                           let mac_coordinates = await location_funcs.get_coordinates_through_mac_datas(["mac0", "mac1", "mac2"],scope); 
-                                          let address = mac_coordinates.lat === 0 || mac_coordinates.lng === 0 ? "invalid data" :await location_funcs.get_address_through_coordinates(mac_coordinates.lat, mac_coordinates.lng);
+                                          let address = mac_coordinates.lat === 0 || mac_coordinates.lng === 0 ? "invalid data" :await location_funcs.get_address_through_coordinates(mac_coordinates.lat, mac_coordinates.lng);console.log(address)
                                          
                                           element_to_insert_the_new_value.innerText = `${mac_coordinates.lat},${mac_coordinates.lng}`;
                                           element_to_insert_the_address.innerText = address;
@@ -91,7 +87,7 @@ function Device_variables(){
                                           let element_to_insert_the_address = document.getElementsByClassName(element_id)[1];//Position 1 because i yhave 2 elements with the same tags, the second element will render the address
 
                                           console.log(element_to_insert_the_new_value, element_to_insert_the_address)
-                                          let lbs_coordinates = await location_funcs.get_coordinates_through_lbs_datas(["lbs0", "lbs1", "lbs2"],scope, scope.metadata.lbs_mode === "LTE" ?"lte" :"gsm" ); console.log(lbs_coordinates)
+                                          let lbs_coordinates = await location_funcs.get_coordinates_through_lbs_datas(["lbs0", "lbs1", "lbs2"],scope, scope.metadata.lbs_mode === "LTE" ?"lte" :"gsm" ); 
                                           let address =  lbs_coordinates.lat === 0 || lbs_coordinates.lng === 0 ? "invalid data" :await location_funcs.get_address_through_coordinates(lbs_coordinates.lat, lbs_coordinates.lng);console.log(address)
                                          
                                           element_to_insert_the_new_value.innerText = `${lbs_coordinates.lat},${lbs_coordinates.lng}`; 
@@ -99,13 +95,14 @@ function Device_variables(){
                                         }
 
                                         else{ 
-                                          let element_to_insert_the_coordinates = document.getElementsByClassName(element_id)[0];
+                                          let element_to_insert_the_new_value = document.getElementsByClassName(element_id)[0];
                                           let element_to_insert_the_address = document.getElementsByClassName(element_id)[1]; 
 
+                                          console.log(element_to_insert_the_new_value, element_to_insert_the_address)
                                           let gps_coordinates = { lat:scope.metadata.lat, lng:scope.metadata.lon };
-                                          let address = await location_funcs.get_address_through_coordinates(gps_coordinates.lat, gps_coordinates.lng);
+                                          let address = gps_coordinates.lat === 0 || gps_coordinates.lng === 0 ? "invalid data" :await location_funcs.get_address_through_coordinates(gps_coordinates.lat, gps_coordinates.lng);console.log(address)
                                           
-                                          element_to_insert_the_coordinates.innerText = `${gps_coordinates.lat},${gps_coordinates.lng}`;
+                                          element_to_insert_the_new_value.innerText = `${gps_coordinates.lat},${gps_coordinates.lng}`;
                                           element_to_insert_the_address.innerText = address;
                                         
                                         }

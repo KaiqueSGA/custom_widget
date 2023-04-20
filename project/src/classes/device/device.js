@@ -44,7 +44,7 @@ export class tago_device{
        let device_token = await this.get_device_token(device_id);
 
        const my_device = new Device({token: device_token });
-       const request = await my_device.getData({qty: 5, variable:"esn"});console.log(request)
+       const request = await my_device.getData({qty: 10, variable:"esn"});console.log(request)
        
   
        return request;
