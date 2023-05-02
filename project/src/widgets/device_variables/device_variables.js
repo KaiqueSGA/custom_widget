@@ -1,6 +1,6 @@
 import './device_variables.css';
 import React, { useEffect, useState } from 'react';
-import ConsoleService from '@tago-io/sdk/out/modules/Services/Console';
+
 
 const { tago_device } = require('../../classes/device/device.js');
 const { location_apis } = require('../../classes/location/location.js')
@@ -27,7 +27,7 @@ function Device_variables(){
 
     
     
-   
+    
 
 
    function add_0_to_left(value){
@@ -117,7 +117,7 @@ function Device_variables(){
 
                                      <td>{`${ add_0_to_left((data.time.getMonth()) + 1)  }/${ add_0_to_left(data.time.getDate()) }/${ add_0_to_left(data.time.getFullYear()) } ${ add_0_to_left(data.time.getHours()) }:${ add_0_to_left(data.time.getMinutes()) }:${ add_0_to_left(data.time.getSeconds()) }`}</td>  
 
-                                    <td className='b'>
+                                    <td className='b'>{/* Origin */}
                                         <select id={data.id} className ="coordinate-types">
                                             <option>Select the data type that you want to see...</option>
                                             <option value="LBS" >LBS coordinates</option>
@@ -128,8 +128,8 @@ function Device_variables(){
                                      
                                      </td>
 
-                                     <td className={data.id}></td>
-                                     <td className={data.id}></td>
+                                     <td className={data.id}></td>{/* Date and time */}
+                                     <td className={data.id}></td>{/* Coordinates */}
 
                                 </tr>
                               )
