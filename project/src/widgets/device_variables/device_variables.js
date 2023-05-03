@@ -13,23 +13,17 @@ function Device_variables(){
   const location_funcs = new location_apis();
 
 
-  /* useEffect(() => {console.log("oiii")
+   useEffect(() => {console.log("oiii")
     window.TagoIO.onStart( async(widget) => {
       window.widget = widget;
 
       let device_id = widget.display.variables[0].origin.id;
-      let request = await device_methods.get_device_variables(device_id).filter(data => data.metadata.media === "STX"); 
-      set_device_variables(request); 
+      let request = await device_methods.get_device_variables(device_id); console.log(request)
+      set_device_variables(request.filter(data => data.metadata.media === "STX")); 
   })
   window.TagoIO.ready(); 
-  },[]) */
-useEffect(() => {
-   device_methods.get_device_variables("6419c2dea997d700090c60ae")
-     .then((data) => {console.log(data)
-        set_device_variables(data.filter(data => data.metadata.media === "STX"))
-     })
-   
-},[])
+  },[]) 
+
 
 
 
@@ -55,6 +49,16 @@ useEffect(() => {
         return value;
       }
 
+   }
+
+
+   const convert_hours_in_seconds = (hour,minute,second) => {
+    let hours_in_seconds = hour * 3600;
+    let minutes_in_seconds = minute * 60;
+
+
+    let total_value = hours_in_seconds + minutes_in_seconds + second;console.log(total_value)
+    return total_value;
    }
 
 
@@ -94,7 +98,7 @@ useEffect(() => {
 
                                       <td className='data_variable'>{`${ add_0_to_left((unixTime.getMonth()) + 1)  }/${ add_0_to_left(unixTime.getDate()) }/${ add_0_to_left(unixTime.getFullYear()) } ${ add_0_to_left(unixTime.getHours()) }:${ add_0_to_left(unixTime.getMinutes()) }:${ add_0_to_left(unixTime.getSeconds()) }`}</td> 
 
-                                      <td className='b'>{ `The values has a difference of: ${Math.abs(unixTime.getHours() - data.time.getHours() )} hours,  ${(Math.abs( ( (unixTime.getMinutes() * 60) - (data.time.getMinutes()) * 60) / 60) )} minutes and  ${Math.abs(unixTime.getSeconds() - data.time.getSeconds())} seconds of unixtime` }</td>
+                                      <td className='b'>{ `The datas has an difference of: ${  Math.abs(convert_hours_in_seconds( data.time.getHours(), data.time.getMinutes(), data.time.getSeconds() )   -   convert_hours_in_seconds(unixTime.getHours(), unixTime.getMinutes(), unixTime.getSeconds() ) ) }(values in seconds)` }</td>
 
                                      <td className={data.id}></td>
                                      <td className={data.id}></td>
