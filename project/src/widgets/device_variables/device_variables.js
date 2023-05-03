@@ -13,16 +13,17 @@ function Device_variables(){
   const location_funcs = new location_apis();
 
 
-   useEffect(() => {console.log("oiii")
+    useEffect(() => {console.log("oiii")
     window.TagoIO.onStart( async(widget) => {
       window.widget = widget;
 
       let device_id = widget.display.variables[0].origin.id;
-      let request = await device_methods.get_device_variables(device_id); console.log(request)
+      let request = await device_methods.get_device_variables(device_id); 
+      console.log(request.filter(data => data.metadata.media === "STX").length)
       set_device_variables(request.filter(data => data.metadata.media === "STX")); 
   })
   window.TagoIO.ready(); 
-  },[]) 
+  },[])  
 
 
 
@@ -57,7 +58,7 @@ function Device_variables(){
     let minutes_in_seconds = minute * 60;
 
 
-    let total_value = hours_in_seconds + minutes_in_seconds + second;console.log(total_value)
+    let total_value = hours_in_seconds + minutes_in_seconds + second;
     return total_value;
    }
 
@@ -88,9 +89,7 @@ function Device_variables(){
                             
                             let unixTime = new Date( (Number( cacthESN(data.metadata.xml) )) * 1000); 
 
-                            console.log(unixTime.getSeconds() - data.time.getSeconds());
-                            console.log();
-                            console.log(" ");
+                        
                               return( 
                                 <tr>
 
