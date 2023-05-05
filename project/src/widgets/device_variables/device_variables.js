@@ -13,22 +13,22 @@ function Device_variables(){
   const location_funcs = new location_apis();
 
 
-  useEffect(() => {console.log("oiii")
+   useEffect(() => {
     window.TagoIO.onStart( async(widget) => {
       window.widget = widget;
 
       let device_id = widget.display.variables[0].origin.id;
       let request = await device_methods.get_device_variables(device_id); 
-      set_device_variables(request); 
+       console.log(request.filter((x) => x.metadata.media === "STX").length)
+      set_device_variables(request.filter((x) => x.metadata.media === "STX"));
   })
   window.TagoIO.ready(); 
-  },[])
+  },[]) 
 
 
-    
-    
-    
 
+
+  
 
    function add_0_to_left(value){
 
@@ -57,76 +57,87 @@ function Device_variables(){
 
                         <table border="1" className='variable_tables'>
                             <tr>
-                                <td>Origin</td>
+                                <td>link</td>
                                 <td>Date and Time</td>
                                 <td>Coordinates</td>
                                   
                             </tr>
                             {device_variables.map(data => { 
 
-                                setTimeout(() => {// This delay is necessary because firt i need to create an element with the corresponding tag and after i catch the element through of id 
-                                    const element_id = data.id;
-                                    const scope = data; 
+                               
 
-                                    document.getElementById(data.id).addEventListener('change', async function(){console.log(this.value)
-                                      
-                                        if(this.value === "MAC"){ 
-                                          let element_to_insert_the_new_value = document.getElementsByClassName(element_id)[0];
-                                          let element_to_insert_the_address = document.getElementsByClassName(element_id)[1]; 
+                                  const hex_2_bin = (hexadecimal_content) => {
+                                    return ("00000000" + parseInt(hexadecimal_content, 16).toString(2)).substr(-8);
+                                  };
 
-                                          console.log(element_to_insert_the_new_value, element_to_insert_the_address)
-                                          let mac_coordinates = await location_funcs.get_coordinates_through_mac_datas(["mac0", "mac1", "mac2"],scope); 
-                                          let address = mac_coordinates.lat === 0 || mac_coordinates.lng === 0 ? "invalid data" :await location_funcs.get_address_through_coordinates(mac_coordinates.lat, mac_coordinates.lng);console.log(address)
-                                         
-                                          element_to_insert_the_new_value.innerText = `${mac_coordinates.lat},${mac_coordinates.lng}`;
-                                          element_to_insert_the_address.innerText = address;
-                                        }
+                                 const catch_payload = (stu_message) => {
+                                    //This function is catching the hexadecimal message sent by device
+                                    let firstTag = stu_message.indexOf(">", stu_message.indexOf("<payload"));
+                                    let secondTag = stu_message.indexOf("</payload>", firstTag);
+                                
+                                    return stu_message.substring(firstTag + 3, secondTag);
+                                  };
+                                
+                                  
+                                  const decode_lat = (file_content, cardinal_position) => {
+                                    let hexadecimal_lat = file_content.substring(0, 6);
+                                    let integer_lat = String(parseInt(hexadecimal_lat, 16)); //estou convertendo para inteiro um valor hexa, por isso eu coloco o 16 como parâmetro
+                                     
+                                    let final_lat = integer_lat / 10_000; 
+                                    let ready_coordinate = cardinal_position === "south"
+                                                                                      ? "-" + String(final_lat.toFixed(8))
+                                                                                      : String(final_lat.toFixed(8));
+                                
+                                    return ready_coordinate; 
+                                  };
+                                
+ 
+                                  const decode_lng = (file_content, cardinal_position) => {
+                                    let hexadecimal_lng = file_content.substring(6, 12);
+                                    let integer_lng = parseInt(hexadecimal_lng, 16);
+                                
+                                    let final_lng = integer_lng / 10_000; 
+                                    let ready_coordinate = cardinal_position === "weast"
+                                                                                     ? "-" + String(final_lng.toFixed(8))
+                                                                                     : String(final_lng.toFixed(8));
+                                
+                                    return ready_coordinate; 
+                                  };
 
-                                        else if(this.value === "LBS"){
-                                          let element_to_insert_the_new_value = document.getElementsByClassName(element_id)[0];
-                                          let element_to_insert_the_address = document.getElementsByClassName(element_id)[1];//Position 1 because i yhave 2 elements with the same tags, the second element will render the address
 
-                                          console.log(element_to_insert_the_new_value, element_to_insert_the_address)
-                                          let lbs_coordinates = await location_funcs.get_coordinates_through_lbs_datas(["lbs0", "lbs1", "lbs2"],scope, scope.metadata.lbs_mode === "LTE" ?"lte" :"gsm" ); 
-                                          let address =  lbs_coordinates.lat === 0 || lbs_coordinates.lng === 0 ? "invalid data" :await location_funcs.get_address_through_coordinates(lbs_coordinates.lat, lbs_coordinates.lng);console.log(address)
-                                         
-                                          element_to_insert_the_new_value.innerText = `${lbs_coordinates.lat},${lbs_coordinates.lng}`; 
-                                          element_to_insert_the_address.innerText = address;
-                                        }
+                                  const decode_binary_values = (payload) => {
+                                    let values_object = new Object();
+                                    let binary = hex_2_bin(payload.substring(12, 14));
 
-                                        else{ 
-                                          let element_to_insert_the_new_value = document.getElementsByClassName(element_id)[0];
-                                          let element_to_insert_the_address = document.getElementsByClassName(element_id)[1]; 
+                                    let value_of_each_byte = {
+                                      0: (byte) => { byte === "0"   ?values_object.cardinal_position_s_n = "south"    :values_object.cardinal_position_s_n = "north"; },
+                                      1: (byte) => { byte === "0"   ?values_object.cardinal_position_w_e = "weast"    :values_object.cardinal_position_w_e = "east";},
+                                      2: (byte) => { byte === "0"   ?values_object.origin = "GPS"                     :values_object.origin = "GPS-DR";},
+                                      3: (byte) => { byte === "0"   ?values_object.mode = 2                           :values_object.mode = 3; },
+                                    };
 
-                                          console.log(element_to_insert_the_new_value, element_to_insert_the_address)
-                                          let gps_coordinates = { lat:scope.metadata.lat, lng:scope.metadata.lon };
-                                          let address = gps_coordinates.lat === 0 || gps_coordinates.lng === 0 ? "invalid data" :await location_funcs.get_address_through_coordinates(gps_coordinates.lat, gps_coordinates.lng);console.log(address)
-                                          
-                                          element_to_insert_the_new_value.innerText = `${gps_coordinates.lat},${gps_coordinates.lng}`;
-                                          element_to_insert_the_address.innerText = address;
-                                        
-                                        }
+                                    for (let i = 0; i <= 3; i++) { value_of_each_byte[String(i)](binary[i]); }//i --> binary position / binary[i] --> binary value
 
-                                    })
+                                    return values_object;
+                                  }
 
-                                },10);
+
+                                  let payload = catch_payload(data.metadata.xml);
+                                  let bin_values_decoded = decode_binary_values(payload);
+
+                                  let latitude = Number(decode_lat(payload, bin_values_decoded.cardinal_position_s_n));
+                                  let longitude = Number(decode_lng(payload, bin_values_decoded.cardinal_position_w_e));
+
+                                  var link = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+                                
                             
                               return( 
                                 <tr>
                                     <td className='data_variable'>{data.metadata.origin}</td>
 
-                                     <td>{`${ add_0_to_left((data.time.getMonth()) + 1)  }/${ add_0_to_left(data.time.getDate()) }/${ add_0_to_left(data.time.getFullYear()) } ${ add_0_to_left(data.time.getHours()) }:${ add_0_to_left(data.time.getMinutes()) }:${ add_0_to_left(data.time.getSeconds()) }`}</td>  
+                                     <td>{String(data.time)}</td>  
 
-                                    <td className='b'>{/* Origin */}
-                                        <select id={data.id} className ="coordinate-types">
-                                            <option>Select the data type that you want to see...</option>
-                                            <option value="LBS" >LBS coordinates</option>
-                                            <option value="MAC" >MAC coordinates</option>
-                                            <option value="GPS" >GPS coordinates</option>
-                                        </select>
-
-                                     
-                                     </td>
+                                    <td className='b'><a href={link} target="_blank"> Google link</a></td>
 
                                      <td className={data.id}></td>{/* Date and time */}
                                      <td className={data.id}></td>{/* Coordinates */}
